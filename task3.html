@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 10px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Interactive Quiz</h2>
+    <div id="quiz"></div>
+    <button id="nextButton" style="display: none;">Next Question</button>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "What is the capital of France?",
+            options: ["Berlin", "Madrid", "Paris", "Lisbon"],
+            answer: "Paris"
+        },
+        {
+            question: "Which planet is known as the Red Planet?",
+            options: ["Earth", "Mars", "Jupiter", "Saturn"],
+            answer: "Mars"
+        },
+        {
+            question: "What is the largest ocean on Earth?",
+            options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+            answer: "Pacific Ocean"
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    function loadQuestion() {
+        const currentQuestion = quizData[currentQuestionIndex];
+        const quizContainer = document.getElementById('quiz');
+        quizContainer.innerHTML = `
+            <div class="question">${currentQuestion.question}</div>
+            <ul class="options">
+                ${currentQuestion.options.map(option => `<li><input type="radio" name="option" value="${option}"> ${option}</li>`).join('')}
+            </ul>
+        `;
+        document.getElementById('nextButton').style.display = 'none';
+    }
+
+    function showNextButton() {
+        document.getElementById('nextButton').style.display = 'block';
+    }
+
+    document.getElementById('nextButton').addEventListener('click', () => {
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        if (selectedOption) {
+            if (selectedOption.value === quizData[currentQuestionIndex].answer) {
+                alert("Correct!");
+            } else {
+                alert("Wrong answer. The correct answer is " + quizData[currentQuestionIndex].answer);
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+                showNextButton();
+            } else {
+                alert("Quiz completed!");
+                document.getElementById('quiz').innerHTML = "<h3>Thank you for participating!</h3>";
+                document.getElementById('nextButton').style.display = 'none';
+            }
+        } else {
+            alert("Please select an answer.");
+        }
+    });
+
+    loadQuestion();
+    showNextButton();
+</script>
+
+</body>
+</html>
+
