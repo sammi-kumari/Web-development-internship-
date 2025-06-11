@@ -1,94 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Listing</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f3f5; margin: 0; padding: 0; color: #2c3e50; }
-        header { background-color: #1abc9c; padding: 1rem 2rem; color: white; text-align: center; font-size: 1.8rem; font-weight: 700; }
-        main { max-width: 1200px; margin: 1rem auto; padding: 0 1rem; }
-        .controls { display: flex; justify-content: space-between; margin-bottom: 1rem; }
-        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
-        .product-card { background: white; padding: 1rem; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .product-image { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
-        .product-name { font-size: 1.2rem; margin: 0.5rem 0; }
-        .product-price { color: #16a085; }
-        footer { text-align: center; padding: 1rem; background: #333; color: #fff; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sammi Kumari | Portfolio</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #f8f9fa, #e6e6fa);
+      color: #333;
+    }
+    header {
+      background: #4b0082;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    nav {
+      background: #6a5acd;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h2 {
+      color: #4b0082;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
+    .skills {
+      font-weight: bold;
+      color: #4b0082;
+    }
+    .todo-container input, .todo-container button {
+      padding: 0.5rem;
+      margin-top: 1rem;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .product-card {
+      background: #e6e6fa;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    footer {
+      background: #4b0082;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
 </head>
 <body>
 
-<header>Product Listing</header>
+<header>
+  <h1>Sammi Kumari</h1>
+  <p>Computer Science (AI & ML) Student</p>
+</header>
 
-<main>
-    <div class="controls">
-        <select id="categoryFilter">
-            <option value="all">All Categories</option>
-            <option value="electronics">Electronics</option>
-            <option value="home">Home Appliances</option>
-            <option value="sport">Sporting Goods</option>
-        </select>
-        <select id="sortRating">
-            <option value="desc">Highest Rating</option>
-            <option value="asc">Lowest Rating</option>
-        </select>
-    </div>
+<nav>
+  <a href="#about">About</a>
+  <a href="#projects">Projects</a>
+  <a href="#contact">Contact</a>
+</nav>
 
-    <div class="products" id="productList"></div>
-</main>
+<section id="about">
+  <h2>About Me</h2>
+  <p>Hi! I’m <strong>Sammi Kumari</strong>, a student of <strong>Computer Science (AI & ML)</strong>. I'm passionate about web development, AI, and coding solutions for real-world problems.</p>
+  <p class="skills">Skills: C, C++, Python, HTML, CSS, JavaScript</p>
+</section>
 
-<footer>&copy; 2024 Your Shop. All rights reserved.</footer>
+<section id="projects">
+  <h2>Projects</h2>
+
+  <h3>📝 To-Do List (with Local Storage)</h3>
+  <div class="todo-container">
+    <input type="text" id="todoInput" placeholder="Enter a task">
+    <button onclick="addTodo()">Add</button>
+    <ul id="todoList"></ul>
+  </div>
+
+  <h3>🛍️ Product Listing</h3>
+  <label>Filter by Category:
+    <select id="categoryFilter" onchange="filterProducts()">
+      <option value="all">All</option>
+      <option value="electronics">Electronics</option>
+      <option value="clothing">Clothing</option>
+    </select>
+  </label>
+  <label>Sort by:
+    <select id="sortOption" onchange="filterProducts()">
+      <option value="price">Price</option>
+      <option value="rating">Rating</option>
+    </select>
+  </label>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <p>Email: <a href="mailto:sammikumari1829@gmail.com">sammikumari1829@gmail.com</a></p>
+</section>
+
+<footer>
+  <p>&copy; 2025 Sammi Kumari | Portfolio</p>
+</footer>
 
 <script>
-    const products = [
-        { id: 1, name: "Wireless Headphones", category: "electronics", price: 89.99, rating: 4.5, image: "https://images.unsplash.com/photo-1517263904808-c2f964c85b57?auto=format&fit=crop&w=600&q=80" },
-        { id: 2, name: "Coffee Maker", category: "home", price: 45.00, rating: 4.0, image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80" },
-        { id: 3, name: "Mountain Bike", category: "sport", price: 599.00, rating: 4.7, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" },
-        { id: 4, name: "Smartphone", category: "electronics", price: 999.99, rating: 4.4, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" },
-        { id: 5, name: "Blender", category: "home", price: 32.75, rating: 3.9, image: "https://images.unsplash.com/photo-1567016523973-1438a694b0d8?auto=format&fit=crop&w=600&q=80" },
-        { id: 6, name: "Running Shoes", category: "sport", price: 120.50, rating: 4.3, image: "https://images.unsplash.com/photo-1528701800489-664f21c0e94b?auto=format&fit=crop&w=600&q=80" },
-        { id: 7, name: "Bluetooth Speaker", category: "electronics", price: 59.99, rating: 4.2, image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=80" },
-        { id: 8, name: "Yoga Mat", category: "sport", price: 25.00, rating: 4.0, image: "https://images.unsplash.com/photo-1526406915896-6d4b30e9b7b4?auto=format&fit=crop&w=600&q=80" }
-    ];
+  // To-Do List
+  function loadTodos() {
+    const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+    const todoList = document.getElementById("todoList");
+    todoList.innerHTML = "";
+    todos.forEach((todo, index) => {
+      const li = document.createElement("li");
+      li.textContent = todo;
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "❌";
+      delBtn.onclick = () => {
+        todos.splice(index, 1);
+        localStorage.setItem("todos", JSON.stringify(todos));
+        loadTodos();
+      };
+      li.appendChild(delBtn);
+      todoList.appendChild(li);
+    });
+  }
 
-    const categoryFilter = document.getElementById('categoryFilter');
-    const sortRating = document.getElementById('sortRating');
-    const productList = document.getElementById('productList');
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+    if (input.value.trim()) {
+      todos.push(input.value.trim());
+      localStorage.setItem("todos", JSON.stringify(todos));
+      input.value = "";
+      loadTodos();
+    }
+  }
 
-    function renderProducts() {
-        const selectedCategory = categoryFilter.value;
-        const sortOrder = sortRating.value;
+  loadTodos();
 
-        let filteredProducts = products.filter(product => 
-            selectedCategory === 'all' || product.category === selectedCategory
-        );
+  // Product Listing
+  const products = [
+    { name: "Smartphone", category: "electronics", price: 499, rating: 4.5, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=60" },
+    { name: "Laptop", category: "electronics", price: 999, rating: 4.8, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=60" },
+    { name: "T-Shirt", category: "clothing", price: 25, rating: 4.2, image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=60" },
+    { name: "Jeans", category: "clothing", price: 40, rating: 4.6, image: "https://images.unsplash.com/photo-1530845645426-41405e2670f0?auto=format&fit=crop&w=400&q=60" }
+  ];
 
-        filteredProducts.sort((a, b) => sortOrder === 'asc' ? a.rating - b.rating : b.rating - a.rating);
+  function filterProducts() {
+    const category = document.getElementById("categoryFilter").value;
+    const sort = document.getElementById("sortOption").value;
+    let filtered = [...products];
 
-        productList.innerHTML = '';
-        filteredProducts.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="product-image" />
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-price">$${product.price.toFixed(2)}</p>
-                <p>Rating: ${product.rating} ★</p>
-            `;
-            productList.appendChild(card);
-        });
+    if (category !== "all") {
+      filtered = filtered.filter(p => p.category === category);
     }
 
-    categoryFilter.addEventListener('change', renderProducts);
-    sortRating.addEventListener('change', renderProducts);
+    if (sort === "price") {
+      filtered.sort((a, b) => a.price - b.price);
+    } else {
+      filtered.sort((a, b) => b.rating - a.rating);
+    }
 
-    renderProducts();
+    const grid = document.getElementById("productGrid");
+    grid.innerHTML = "";
+    filtered.forEach(p => {
+      grid.innerHTML += `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}">
+          <h4>${p.name}</h4>
+          <p>Price: $${p.price}</p>
+          <p>Rating: ${p.rating}⭐</p>
+        </div>
+      `;
+    });
+  }
+
+  filterProducts();
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
