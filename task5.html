@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Capstone Shopping Site</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    nav { background: #333; color: white; display: flex; justify-content: center; gap: 2em; padding: 1em; }
+    nav button { background: none; border: none; color: white; font-size: 1em; cursor: pointer; }
+    header, main, section { padding: 1em; text-align: center; }
+    .product-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1em; }
+    .product { border: 1px solid #ccc; padding: 1em; width: 200px; }
+    .product img { width: 100%; height: auto; border-radius: 4px; }
+    .controls { margin-bottom: 1em; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    input, select { padding: 0.5em; width: 200px; }
+    #cart-badge { position: fixed; top: 10px; right: 10px; background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; }
+    .hidden { display: none; }
+    .offer-box { background: #ffeb3b; padding: 1em; margin: 1em auto; width: 80%; border-radius: 8px; font-weight: bold; }
+    @media (max-width: 600px) {
+      .product-grid { flex-direction: column; align-items: center; }
+      nav { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <button onclick="showSection('home')">Home</button>
+  <button onclick="showSection('shop')">Shop</button>
+  <button onclick="showSection('cart')">Cart</button>
+</nav>
+
+<div id="cart-badge">Cart: <span id="cartCount">0</span></div>
+
+<!-- Home Section with Offers -->
+<section id="home">
+  <header>
+    <h1>Welcome to Capstone Shopping</h1>
+    <div class="offer-box">🔥 Mega Sale: Up to 50% Off on Electronics!</div>
+    <div class="offer-box">🎉 Fashion Fiesta: Buy 1 Get 1 Free on T-Shirts!</div>
+    <div class="offer-box">🚚 Free Shipping on orders above $50!</div>
+  </header>
+</section>
+
+<!-- Shop Section -->
+<section id="shop" class="hidden">
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search products...">
+    <select id="category">
+      <option value="all">All Categories</option>
+      <option value="electronics">Electronics</option>
+      <option value="fashion">Fashion</option>
+    </select>
+    <select id="sort">
+      <option value="default">Sort By</option>
+      <option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option>
+    </select>
+  </div>
+  <div class="product-grid" id="productList"></div>
+</section>
+
+<!-- Cart Section -->
+<section id="cart" class="hidden">
+  <h2>Your Shopping Cart</h2>
+  <div id="cartItems"></div>
+</section>
+
+<script>
+  const products = [
+    {
+      id: 1,
+      name: "Smartphone",
+      category: "electronics",
+      price: 299,
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 2,
+      name: "Headphones",
+      category: "electronics",
+      price: 99,
+      image: "https://images.unsplash.com/photo-1580894908361-967195033215?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 3,
+      name: "T-Shirt",
+      category: "fashion",
+      price: 25,
+      image: "https://images.unsplash.com/photo-1622335788690-bdc925b2e395?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      id: 4,
+      name: "Sneakers",
+      category: "fashion",
+      price: 89,
+      image: "https://images.unsplash.com/photo-1600185365312-3f2b6d3af3c7?auto=format&fit=crop&w=400&q=80"
+    }
+  ];
+
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  function updateCart() {
+    document.getElementById("cartCount").textContent = cart.length;
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  function displayProducts(filterName = '', category = 'all', sort = 'default') {
+    let filtered = products.filter(p => p.name.toLowerCase().includes(filterName.toLowerCase()));
+    if (category !== 'all') {
+      filtered = filtered.filter(p => p.category === category);
+    }
+
+    if (sort === 'low') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sort === 'high') {
+      filtered.sort((a, b) => b.price - a.price);
+    }
+
+    const container = document.getElementById("productList");
+    container.innerHTML = '';
+    filtered.forEach(p => {
+      container.innerHTML += `
+        <div class="product">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <h3>${p.name}</h3>
+          <p>Category: ${p.category}</p>
+          <p>Price: $${p.price}</p>
+          <button onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>
+      `;
+    });
+  }
+
+  function addToCart(id) {
+    cart.push(id);
+    updateCart();
+  }
+
+  function showSection(sectionId) {
+    ['home', 'shop', 'cart'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(sectionId).classList.remove('hidden');
+
+    if (sectionId === 'cart') {
+      displayCart();
+    } else if (sectionId === 'shop') {
+      displayProducts();
+    }
+  }
+
+  function displayCart() {
+    const container = document.getElementById("cartItems");
+    container.innerHTML = '';
+
+    if (cart.length === 0) {
+      container.innerHTML = "<p>Your cart is empty.</p>";
+      return;
+    }
+
+    const grouped = cart.reduce((acc, id) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {});
+
+    for (let id in grouped) {
+      const p = products.find(prod => prod.id == id);
+      container.innerHTML += `
+        <div>
+          <h4>${p.name}</h4>
+          <p>Quantity: ${grouped[id]}</p>
+          <p>Total: $${p.price * grouped[id]}</p>
+        </div>
+        <hr>
+      `;
+    }
+  }
+
+  document.getElementById("search").addEventListener("input", () => {
+    displayProducts(
+      document.getElementById("search").value,
+      document.getElementById("category").value,
+      document.getElementById("sort").value
+    );
+  });
+
+  document.getElementById("category").addEventListener("change", () => {
+    displayProducts(
+      document.getElementById("search").value,
+      document.getElementById("category").value,
+      document.getElementById("sort").value
+    );
+  });
+
+  document.getElementById("sort").addEventListener("change", () => {
+    displayProducts(
+      document.getElementById("search").value,
+      document.getElementById("category").value,
+      document.getElementById("sort").value
+    );
+  });
+
+  updateCart();
+  showSection('home');
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
